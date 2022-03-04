@@ -72,7 +72,7 @@ func GetAltitudesSqlx(db *sql.DB) *Altitudes {
 }
 func GetLastAltitudeSqlx(db *sql.DB) *Altitudes {
 	altitudes := Altitudes{}
-	rows, err := db.Query("SELECT id, valore, data_inserimento FROM altitudine where id = (select max(id) from pioggia)")
+	rows, err := db.Query("SELECT id, valore, data_inserimento FROM altitudine where id = (select max(id) from altitudine)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -130,7 +130,6 @@ func PostAltitudeSqlx(db *sql.DB, reqAltitude *ReqAddAltitude) (*Altitude, strin
 
 	//sqlStatement := fmt.Sprintf("insert into 'pioggia' ('valore','data_inserimento') values (%d,CURRENT_TIMESTAMP) RETURNING id", value)
 	sqlStatement := fmt.Sprintf("insert into altitudine (valore,data_inserimento) values (%.2f,CURRENT_TIMESTAMP) RETURNING id", value)
-	log.Println(sqlStatement)
 
 	err := db.QueryRow(sqlStatement).Scan(&lastInsertId)
 
