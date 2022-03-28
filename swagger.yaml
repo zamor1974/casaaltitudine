@@ -107,8 +107,8 @@ definitions:
         description: |-
           Value of the Altitude
           in: int
-        format: int64
-        type: integer
+        format: float
+        type: number
         x-go-name: Value
     type: object
     x-go-package: casaaltitudine/models
@@ -145,9 +145,6 @@ paths:
           description: CommonError
           schema:
             $ref: '#/definitions/CommonError'
-      security:
-      - apiKey:
-        - '[]'
   /lasthour:
     get:
       description: Get list of last hour of altitude values .... or the last value
@@ -162,9 +159,26 @@ paths:
           description: CommonError
           schema:
             $ref: '#/definitions/CommonError'
-      security:
-      - apiKey:
-        - '[]'
+  /showdata/{recordNumber}:
+    get:
+      description: Get list of recordNumber of altitude values
+      operationId: showData
+      parameters:
+      - description: maximum numnber of results to return
+        format: int32
+        in: path
+        name: recordNumber
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: GetAltitudes
+          schema:
+            $ref: '#/definitions/GetAltitudes'
+        "401":
+          description: CommonError
+          schema:
+            $ref: '#/definitions/CommonError'
 produces:
 - application/json
 schemes:

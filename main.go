@@ -39,14 +39,15 @@ func main() {
 		w.Write([]byte("{\"hello\": \"world\"}"))
 	})
 
-	unidita := r.PathPrefix("/").Subrouter()
-	unidita.HandleFunc("/altitude", hsqlx.PostAltitudeSqlx).Methods("POST")
-	unidita.HandleFunc("/altitudes", hsqlx.GetAltitudesSqlx).Methods("GET")
-	unidita.HandleFunc("/lasthour", hsqlx.GetLastHourSqlx).Methods("GET")
+	altitudine := r.PathPrefix("/").Subrouter()
+	altitudine.HandleFunc("/altitude", hsqlx.PostAltitudeSqlx).Methods("POST")
+	altitudine.HandleFunc("/altitudes", hsqlx.GetAltitudesSqlx).Methods("GET")
+	altitudine.HandleFunc("/lasthour", hsqlx.GetLastHourSqlx).Methods("GET")
+	altitudine.HandleFunc("/showdata/{recordNumber}", hsqlx.GetShowDataSqlx).Methods("GET")
 
 	http.Handle("/", r)
 	s := &http.Server{
-		Addr:    fmt.Sprintf("%s:%s", "", "5557"),
+		Addr:    fmt.Sprintf("%s:%s", "", "5558"),
 		Handler: cors.Default().Handler(r),
 	}
 	s.ListenAndServe()

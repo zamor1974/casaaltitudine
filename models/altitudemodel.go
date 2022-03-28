@@ -119,6 +119,28 @@ func GetLastHourSqlx(db *sql.DB) *Altitudes {
 	return &altitudes
 }
 
+func GetShowDataSqlx(db *sql.DB, recordNumber int) *Altitudes {
+	altitudes := Altitudes{}
+
+	sqlStatement := fmt.Sprintf("WITH t AS (SELECT id,valore,data_inserimento FROM altitudine ORDER BY data_inserimento DESC LIMIT %d) SELECT id,valore,data_inserimento FROM t ORDER BY data_inserimento ASC", recordNumber)
+
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var p Altitude
+		if err := rows.Scan(&p.Id, &p.Value, &p.DateInsert); err != nil {
+			log.Fatal(err)
+		}
+		altitudes = append(altitudes, p)
+	}
+
+	return &altitudes
+}
+
 // PostAltitudeSqlx insert Altitude value
 func PostAltitudeSqlx(db *sql.DB, reqAltitude *ReqAddAltitude) (*Altitude, string) {
 

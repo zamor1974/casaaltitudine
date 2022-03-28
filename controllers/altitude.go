@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -76,8 +78,6 @@ func ErrHandler(errmessage string) *CommonError {
 // swagger:route GET /altitudes listAltitude
 // Get Altitude list
 //
-// security:
-// - apiKey: []
 // responses:
 //  401: CommonError
 //  200: GetAltitudes
@@ -97,8 +97,6 @@ func (h *BaseHandlerSqlx) GetAltitudesSqlx(w http.ResponseWriter, r *http.Reques
 // swagger:route GET /lasthour lastHour
 // Get list of last hour of altitude values .... or the last value inserted
 //
-// security:
-// - apiKey: []
 // responses:
 //  401: CommonError
 //  200: GetAltitudes
@@ -106,6 +104,42 @@ func (h *BaseHandlerSqlx) GetLastHourSqlx(w http.ResponseWriter, r *http.Request
 	response := GetAltitudes{}
 
 	altitudes := models.GetLastHourSqlx(h.db.DB)
+
+	response.Status = 1
+	response.Message = lang.Get("success")
+	response.Data = altitudes
+
+	w.Header().Set("content-type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+// swagger:route GET /showdata/{recordNumber} showData
+// Get list of recordNumber of altitude values
+//
+//     Parameters:
+//       + name: recordNumber
+//         in: path
+//         description: maximum numnber of results to return
+//         required: true
+//         type: integer
+//         format: int32
+// responses:
+//  401: CommonError
+//  200: GetAltitudes
+func (h *BaseHandlerSqlx) GetShowDataSqlx(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("qui")
+	vars := mux.Vars(r)
+
+	recordNumber, err := strconv.Atoi(vars["recordNumber"])
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+
+	}
+
+	response := GetAltitudes{}
+
+	altitudes := models.GetShowDataSqlx(h.db.DB, recordNumber)
 
 	response.Status = 1
 	response.Message = lang.Get("success")
